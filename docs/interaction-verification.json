@@ -1,0 +1,15 @@
+{
+  "feed": true,
+  "play": true,
+  "oneShotReturn": true,
+  "refreshMidAction": true,
+  "sleepPersistence": true,
+  "wakeBeforeInteraction": true,
+  "statusReadOnly": true,
+  "invalidCommandsReadOnly": true,
+  "clamp": true,
+  "happy": true,
+  "swim": true,
+  "explicitWake": true,
+  "errors": []
+}

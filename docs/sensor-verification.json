@@ -1,0 +1,17 @@
+{
+  "scheduledTick": true,
+  "sleepRecovery": true,
+  "dark": true,
+  "near": true,
+  "sleepUndisturbed": true,
+  "backgroundPause": true,
+  "resumeNoCatchup": true,
+  "sensorReset": true,
+  "lowEnergy": true,
+  "clamp": true,
+  "noVideoRestart": true,
+  "failedTickAtomic": true,
+  "darkPriority": true,
+  "noOfflineCatchup": true,
+  "errors": []
+}

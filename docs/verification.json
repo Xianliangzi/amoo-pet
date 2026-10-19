@@ -1,0 +1,58 @@
+{
+  "creation": true,
+  "reload": true,
+  "reopen": true,
+  "previewPreservesState": true,
+  "mobileOverflow": false,
+  "errors": [],
+  "media": [
+    {
+      "src": "/amoo/idle.mp4",
+      "width": 834,
+      "height": 1112,
+      "duration": 5.088005,
+      "loop": true,
+      "decoded": true
+    },
+    {
+      "src": "/amoo/swim.mp4",
+      "width": 834,
+      "height": 1112,
+      "duration": 5.088005,
+      "loop": true,
+      "decoded": true
+    },
+    {
+      "src": "/amoo/eat.mp4",
+      "width": 834,
+      "height": 1112,
+      "duration": 5.088005,
+      "loop": false,
+      "decoded": true
+    },
+    {
+      "src": "/amoo/play.mp4",
+      "width": 834,
+      "height": 1112,
+      "duration": 5.088005,
+      "loop": false,
+      "decoded": true
+    },
+    {
+      "src": "/amoo/happy.mp4",
+      "width": 834,
+      "height": 1112,
+      "duration": 5.088005,
+      "loop": false,
+      "decoded": true
+    },
+    {
+      "src": "/amoo/sleep.mp4",
+      "width": 834,
+      "height": 1112,
+      "duration": 5.088005,
+      "loop": true,
+      "decoded": true
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+const { chromium } = require('C:/Users/admin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const fs = require('node:fs');
+(async()=>{
+ const browser=await chromium.launch({channel:'msedge',headless:true,args:['--autoplay-policy=no-user-gesture-required']});
+ const context=await browser.newContext({viewport:{width:1440,height:1100}});
+ const page=await context.newPage();page.setDefaultTimeout(15000);const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('http://127.0.0.1:5173');
+ await page.getByLabel('给它取个名字').fill('互动验收');
+ await page.getByRole('button',{name:'与 Amoo 初次见面 →'}).click();
+ await page.getByText('身份与状态已写入 IndexedDB').waitFor();
+ const read=()=>page.evaluate(async()=>{const db=await new Promise((resolve,reject)=>{const r=indexedDB.open('amoo-desktop-p0');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)});return new Promise((resolve,reject)=>{const r=db.transaction('pets').objectStore('pets').get('primary');r.onsuccess=()=>{db.close();resolve(r.result)};r.onerror=()=>reject(r.error)})});
+ const send=async(text)=>{console.log('send',text);await page.getByLabel('给 Amoo 发指令').fill(text);await page.getByRole('button',{name:'发送指令',exact:true}).click();await page.getByRole('button',{name:'发送指令',exact:true}).waitFor();await page.waitForFunction(()=>!document.querySelector('#command').disabled)};
+ const behavior=async b=>{console.log('wait',b);await page.waitForFunction(b=>document.querySelector('video').getAttribute('src')===`/amoo/${b}.mp4`,b)};
+ const initial=await read();
+ await send('喂它');await behavior('eat');let pet=await read();
+ if(pet.state.satiety!==100||pet.state.mood!==80||pet.state.bond!==2)throw Error('Feed deltas');
+ await page.locator('video').scrollIntoViewIfNeeded();await behavior('idle');
+ await send('陪它玩');await behavior('play');pet=await read();
+ if(pet.state.energy!==65||pet.state.mood!==95||pet.state.bond!==7)throw Error('Play deltas');
+ // Refresh mid-action must not repeat rewards or retain a transient action.
+ await page.reload();await page.getByText('身份与状态已写入 IndexedDB').waitFor();await behavior('idle');
+ pet=await read();if(pet.state.bond!==7||pet.profile.petId!==initial.profile.petId)throw Error('Action reload');
+ await send('睡觉');await behavior('sleep');await page.reload();await page.getByText('身份与状态已写入 IndexedDB').waitFor();await behavior('sleep');
+ await page.getByLabel('给 Amoo 发指令').fill('陪它玩');await page.getByRole('button',{name:'发送指令',exact:true}).click();
+ await page.locator('.conversation .amoo').filter({hasText:'Amoo 醒来了，接下来回应你的指令。'}).waitFor();await behavior('idle');
+ await behavior('play');await behavior('idle');
+ pet=await read();if(pet.state.energy!==50||pet.state.mood!==100||pet.state.bond!==12)throw Error('Wake then play');
+ const before=JSON.stringify(pet.state);await send('它怎么样');if(JSON.stringify((await read()).state)!==before)throw Error('Status mutates');
+ await send('不要喂它');await send('喂它然后睡觉');await send('你好');if(JSON.stringify((await read()).state)!==before)throw Error('Invalid instruction mutates');
+ await send('开心');await behavior('happy');await behavior('idle');
+ await send('游动');await behavior('swim');await send('睡觉');await behavior('sleep');await send('醒来');await behavior('idle');
+ await page.screenshot({path:'artifacts/interaction.png',fullPage:true});
+ await page.setViewportSize({width:390,height:844});if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Mobile overflow');
+ if(errors.length)throw Error(errors.join('\n'));
+ const report={feed:true,play:true,oneShotReturn:true,refreshMidAction:true,sleepPersistence:true,wakeBeforeInteraction:true,statusReadOnly:true,invalidCommandsReadOnly:true,clamp:true,happy:true,swim:true,explicitWake:true,errors};
+ fs.writeFileSync('docs/interaction-verification.json',JSON.stringify(report,null,2));console.log(report);await browser.close();
+})().catch(e=>{console.error(e);process.exit(1)});

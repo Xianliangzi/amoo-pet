@@ -1,0 +1,18 @@
+{
+  "legacyMigration": true,
+  "identityPreserved": true,
+  "actionEvents": true,
+  "milestoneDedup": true,
+  "preference": true,
+  "memoryQueryReadOnly": true,
+  "sleepRecallDoesNotWake": true,
+  "refreshPersistence": true,
+  "failedWriteAtomic": true,
+  "retryAfterFailure": true,
+  "ruleBoundaries": {
+    "six": false,
+    "five": true,
+    "four": false
+  },
+  "errors": []
+}

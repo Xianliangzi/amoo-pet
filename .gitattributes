@@ -1,0 +1,8 @@
+# 统一换行符，跨 Windows / macOS 接手时保持一致
+* text=auto eol=lf
+
+# 二进制文件，禁止任何转换
+*.mp4 binary
+*.png binary
+*.jpg binary
+*.glb binary
